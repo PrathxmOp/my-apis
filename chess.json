@@ -3,6 +3,8 @@
     "prathxmmm": "IM"
   },
   "__HELP__": {
+    "info": "Availble Titles",
+    "valid_codes": {
       "GM": "Grandmaster",
       "WGM": "Woman Grandmaster",
       "IM": "International Master",
