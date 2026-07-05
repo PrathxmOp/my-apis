@@ -268,7 +268,7 @@ verify_hint() {
   then
     echo
     echo "To verify the installation, run the following command to check the OpenSSL signature:"
-    echo "    curl -fsSL https://raw.githubusercontent.com/PrathxmOp/BlackHole/master/blockguard_ed25519_pubkey.pem -o blockguard_ed25519_pubkey.pem"
+    echo "    curl -fsSL https://raw.githubusercontent.com/PrathxmOp/BlockGuard/master/blockguard_ed25519_pubkey.pem -o blockguard_ed25519_pubkey.pem"
     echo "    openssl pkeyutl -verify -inkey blockguard_ed25519_pubkey.pem -pubin -sigfile ${output_dir}/${exe_name}.sig -in ${output_dir}/${exe_name} -rawin"
   fi
 }
@@ -419,7 +419,7 @@ configure() {
     pkg_name="${exe_name}-${os}-${cpu}.${pkg_ext}"
   fi
   apply_version
-  url="https://github.com/PrathxmOp/BlackHole/releases/download/v${version}/${pkg_name}"
+  url="https://github.com/PrathxmOp/BlockGuard/releases/download/v${version}/${pkg_name}"
 
   readonly output_dir url pkg_name
 
