@@ -151,11 +151,11 @@ set_cpu() {
   # Validate.
   case "$cpu"
   in
-  ('x86_64'|'aarch64')
+  ('x86_64'|'aarch64'|'armv7'|'mipsel')
     # All right, go on.
     ;;
   (*)
-    error_exit "Unsupported CPU type: $cpu. Only x86_64 and aarch64 are supported."
+    error_exit "Unsupported CPU type: $cpu. Supported types: x86_64, aarch64, armv7, mipsel."
     ;;
   esac
 
@@ -367,35 +367,6 @@ check_package() {
   esac
 }
 
-# Function parse_version parses the version from the passed script and it's arguments.
-parse_version() {
-  if [ "$uninstall" -eq '1' ]; then
-    return 0
-  fi
-
-  if [ -n "$version" ]; then
-    return 0
-  fi
-  # Extract the base name of the script
-  script_name="${0##*/}"
-
-  version=$(echo "${script_name}" | sed -nE 's/.*([0-9]+\.[0-9]+\.[0-9]+).*/\1/p')
-  if [ -z "$version" ]; then
-    echo "Version required"
-    return 1
-  fi
-  echo "Version number extracted from script name: $version"
-}
-
-# Add version to the package name if it's not empty.
-apply_version() {
-  if [ -z "$version" ]; then
-    return 0
-  fi
-
-  pkg_name=$(echo "${pkg_name}" | sed -E "s/${exe_name}/${exe_name}-${version}/")
-}
-
 # Main function.
 configure() {
   if [ "$uninstall" -eq '1' ]
@@ -408,18 +379,23 @@ configure() {
 
   set_os
   set_cpu
-  parse_version
   check_out_dir
 
   pkg_ext='tar.gz'
   if [ "$os" = 'macos' ]
   then
     pkg_name="${exe_name}-macos.${pkg_ext}"
+  elif [ "$cpu" = 'armv7' ]
+  then
+    pkg_name="${exe_name}-router-arm.${pkg_ext}"
+  elif [ "$cpu" = 'mipsel' ]
+  then
+    pkg_name="${exe_name}-router-mips.${pkg_ext}"
   else
     pkg_name="${exe_name}-${os}-${cpu}.${pkg_ext}"
   fi
-  apply_version
-  url="https://github.com/PrathxmOp/BlockGuard/releases/download/v${version}/${pkg_name}"
+
+  url="https://github.com/PrathxmOp/BlockGuard/releases/latest/download/${pkg_name}"
 
   readonly output_dir url pkg_name
 
@@ -584,7 +560,7 @@ channel='release'
 verbose='0'
 cpu=''
 os=''
-version='1.0.0'
+version='1.0.2'
 uninstall='0'
 remove_command="rm -f"
 symlink_exists='0'
